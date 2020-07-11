@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+import "options/options.proto";
+
+package hits;
+
+service Counter {
+    option (options.service) = {
+        version: "v1"
+    };
+
+    //Hit       触发点击计数、会话计数、用户计数
+    rpc Hit(HitReq) returns (HitResp);
+    //HitGet    只读点击计数、会话计数、用户计数
+    rpc HitGet(HitGetReq) returns (HitGetResp);
+
+    //ThumbUp   触发点赞计数
+    rpc ThumbUp(ThumbUpReq) returns (ThumbUpResp);
+    //ThumbGet  只读点赞计数
+    rpc ThumbGet(ThumbGetReq) returns (ThumbGetResp);
+
+    //Rate      五星评价计数
+    rpc Rate(RateReq) returns (RateResp);
+    //RateGet   只读五星评价
+    rpc RateGet(RateGetReq) returns (RateGetResp);
+}
+
+message HitReq {
+    string session_storage = 1; //会话存储
+    string persist_storage = 2; //持久存储
+    string url = 3;
+    int64 init_hits = 4;
+    int64 init_ssns = 5;
+    int64 init_uids = 6;
+}
+
+message HitResp {
+    int64 hits = 1;
+    int64 ssns = 2;
+    int64 uids = 3;
+    string session_storage = 4;
+    string persist_storage = 5;
+}
+
+message HitGetReq {
+    string url = 1;
+    int64 init_hits = 2;
+    int64 init_ssns = 3;
+    int64 init_uids = 4;
+}
+
+message HitGetResp {
+    int64 hits = 1;
+    int64 ssns = 2;
+    int64 uids = 3;
+}
+
+message ThumbUpReq {
+    string persist_storage = 1; //持久存储
+    string url = 2;
+    int64 init_thumbs = 3;
+}
+
+message ThumbUpResp {
+    int64 thumbs = 1;
+    bool  thumbed = 2; //当前点赞状态：未赞/已赞
+    string session_storage = 3;
+    string persist_storage = 4;
+}
+
+message ThumbGetReq {
+    string persist_storage = 1; //持久存储
+    string url = 2;
+    int64  init_thumbs = 3;
+}
+
+message ThumbGetResp {
+    int64 thumbs = 1;
+    bool  thumbed = 2; //当前点赞状态：未赞/已赞
+}
+
+message RateReq{
+    string persist_storage = 1; //持久存储
+    string url = 2;
+    int32 rate = 3;    
+}
+
+message RateResp{
+    float average_rate = 1;
+    int32 total = 2;
+    string persist_storage = 3; //持久存储
+}
+
+message RateGetReq {
+    string url = 1;
+}
+message RateGetResp {
+    float average_rate = 1;
+    int32 total = 2;
+}
